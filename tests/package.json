@@ -1,0 +1,26 @@
+{
+  "name": "autogara-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bộ kiểm thử AutoGara (Cypress API + E2E, c8 coverage). Không chứa mã sản phẩm.",
+  "scripts": {
+    "db:up": "docker start autogara-test || docker run --name autogara-test -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=autogara_test -p 5433:5432 -d postgres:16",
+    "backend": "cd ../backend && node --env-file=../tests/.env.test server.js",
+    "backend:cov": "cd ../backend && c8 --reporter=html --reporter=text --reports-dir ../tests/coverage node --env-file=../tests/.env.test -r ../tests/scripts/exit-on-signal.js server.js",
+    "backend:stop": "node -e \"require('fs').writeFileSync('.stop-backend','')\"",
+    "frontend": "serve ../frontend -l 5500",
+    "seed": "node --env-file=.env.test scripts/seed.js",
+    "test:api": "cypress run --spec \"cypress/e2e/api/**\"",
+    "test:ui": "cypress run --spec \"cypress/e2e/ui/**\"",
+    "test": "cypress run",
+    "cy:open": "cypress open"
+  },
+  "devDependencies": {
+    "bcryptjs": "^2.4.3",
+    "c8": "^10.1.3",
+    "cypress": "^13.17.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
+    "serve": "^14.2.4"
+  }
+}
