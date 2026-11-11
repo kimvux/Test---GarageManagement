@@ -54,8 +54,13 @@ Frontend ở http://localhost:5500.
 ```powershell
 npm run test:api       # chỉ test API
 npm run test:ui        # chỉ test giao diện
-npm test               # tất cả
 npm run cy:open        # mở giao diện Cypress (dùng khi quay video)
+```
+
+**Hoặc mở 1 cửa sổ:**
+
+```powershell
+npm test               # test tất cả (lệnh này tự động chạy backend và frontend nên chỉ cần mở 1 PowerShell)
 ```
 
 Mỗi test tự seed lại CSDL trong `beforeEach`, nên chạy bao nhiêu lần cũng được. Muốn seed bằng tay: `npm run seed`.
