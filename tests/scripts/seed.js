@@ -5,13 +5,15 @@
 
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
+const { assertTestDatabase, loadTestEnv } = require('./environment');
 
 const TABLES = [
   'invoices', 'order_parts', 'order_services', 'appointments', 'repair_orders',
   'parts', 'services', 'vehicles', 'customers', 'users',
 ];
 
-async function seed(databaseUrl = process.env.DATABASE_URL) {
+async function seed(databaseUrl = loadTestEnv().DATABASE_URL) {
+  assertTestDatabase(databaseUrl);
   const client = new Client({ connectionString: databaseUrl });
   await client.connect();
   try {

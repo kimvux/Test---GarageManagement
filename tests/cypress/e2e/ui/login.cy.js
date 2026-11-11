@@ -11,7 +11,8 @@ describe('F01 – Đăng nhập (E2E)', () => {
     cy.get('#login-username').type('admin');
     cy.get('#login-password').type('admin123');
     cy.get('#login-btn').click();
-    cy.wait('@api').its('request.url').should('contain', Cypress.env('apiUrl'));
+    cy.wait('@localLogin').its('response.statusCode').should('eq', 200);
+    cy.wait('@localDashboard').its('response.statusCode').should('eq', 200);
     cy.get('#app').should('have.class', 'visible');
     cy.get('#page-dashboard').should('have.class', 'active');
     cy.get('#user-display-name').should('have.text', 'Quản lý');

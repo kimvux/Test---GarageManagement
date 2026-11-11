@@ -1,6 +1,10 @@
 node_modules/
 coverage/
+.nyc_output/
+reports/
+.env.test.local
 .stop-backend
+.test-run.lock
 cypress/screenshots/
 cypress/videos/
 cypress/downloads/
