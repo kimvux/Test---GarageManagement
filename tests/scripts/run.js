@@ -16,7 +16,12 @@ const SPECS = {
   api: 'cypress/e2e/api/*.cy.js',
   ui: 'cypress/e2e/ui/*.cy.js',
   dashboard: 'cypress/e2e/ui/dashboard.phase2.cy.js',
+  auth: 'cypress/e2e/api/auth.cy.js,cypress/e2e/ui/login.cy.js',
+  orders: 'cypress/e2e/{api,ui}/orders.cy.js',
+  parts: 'cypress/e2e/api/parts.cy.js',
+  invoices: 'cypress/e2e/{api,ui}/invoices.cy.js',
 };
+const COUNTS = { all: 82, api: 77, ui: 5, auth: 20, orders: 22, parts: 22, invoices: 18, dashboard: 5 };
 const LOCK = path.join(ROOT, '.test-run.lock');
 let backend, frontend, environment, databaseReady = false, locked = false, stopping;
 
@@ -94,12 +99,12 @@ function writeResults(results, mode) {
   let sha = 'unknown';
   try { sha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim(); } catch { /* Bản ZIP không có git. */ }
   const report = {
-    date: new Date().toISOString(), mode, sourceCommit: sha, node: process.versions.node,
+    date: new Date().toISOString(), mode, sourceCommit: sha, testCaseSource: 'Test Case.xlsx.pdf', node: process.versions.node,
     cypress: results.cypressVersion, database: 'PostgreSQL local / autogara_test :5433',
     total: results.totalTests, passed: results.totalPassed, failed: results.totalFailed,
     pending: results.totalPending, skipped: results.totalSkipped,
     runs: results.runs.map(run => ({ spec: run.spec.relative,
-      tests: run.tests.map(test => ({ title: test.title.join(' > '), state: test.state,
+      tests: run.tests.map(test => ({ id: test.title.join(' ').match(/TC-[A-Z]+-\d{2}/)?.[0] || null, title: test.title.join(' > '), state: test.state,
         error: test.displayError || test.attempts?.find(a => a.error)?.error?.message || null })),
     })),
   };
@@ -107,7 +112,14 @@ function writeResults(results, mode) {
   const escape = value => String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
   const rows = report.runs.flatMap(run => run.tests.map(t => `| ${escape(run.spec)} | ${escape(t.title)} | ${t.state} | ${escape(t.error || '')} |`));
   fs.writeFileSync(path.join(dir, 'latest-results.md'), `# Kết quả Cypress\n\n${report.date}\n\nCommit: ${sha}\n\nTổng ${report.total}; Pass ${report.passed}; Fail ${report.failed}; Pending ${report.pending}; Skipped ${report.skipped}.\n\n| Spec | Test | Kết quả | Lỗi |\n|---|---|---|---|\n${rows.join('\n')}\n`);
-  console.log('\nĐã ghi reports/latest-results.md và reports/latest-results.json.');
+  const csv = value => '"' + String(value ?? '').replace(/"/g, '""') + '"';
+  const csvRows = [['Mã TC', 'Spec', 'Tên test', 'Trạng thái', 'Lỗi thực tế']];
+  for (const run of report.runs) {
+    for (const test of run.tests) csvRows.push([test.id, run.spec, test.title,
+      { passed: 'Pass', failed: 'Fail', pending: 'Pending', skipped: 'Skipped' }[test.state] || test.state, test.error]);
+  }
+  fs.writeFileSync(path.join(dir, 'latest-results.csv'), '\uFEFF' + csvRows.map(row => row.map(csv).join(',')).join('\n') + '\n');
+  console.log('\nĐã ghi reports/latest-results.md, .json và .csv (mở bằng Excel).');
 }
 
 async function main() {
@@ -116,10 +128,10 @@ async function main() {
   check();
   environment = loadTestEnv();
   lock();
-  for (const name of ['latest-results.md', 'latest-results.json']) {
+  for (const name of ['latest-results.md', 'latest-results.json', 'latest-results.csv']) {
     fs.rmSync(path.join(ROOT, 'reports', name), { force: true });
   }
-  const needsUI = mode !== 'api';
+  const needsUI = !['api', 'parts'].includes(mode);
   for (const port of needsUI ? [3000, 5500] : [3000]) {
     if (await portBusy(port)) throw new Error(`Cổng ${port} đang được dùng. Dừng backend/frontend cũ bằng Ctrl+C rồi chạy lại cùng lệnh.`);
   }
@@ -153,6 +165,7 @@ async function main() {
     const results = await cypress.run({ ...options, spec: SPECS[mode] });
     if (results.failures !== undefined) throw new Error(results.message || 'Cypress không khởi động được. Chạy npm run setup.');
     writeResults(results, mode);
+    if (results.totalTests !== COUNTS[mode]) throw new Error(`Số test sai: cần ${COUNTS[mode]}, thực chạy ${results.totalTests}. Xem báo cáo và npm run check.`);
     process.exitCode = results.totalFailed || results.totalPending || results.totalSkipped ? 1 : 0;
   }
 }

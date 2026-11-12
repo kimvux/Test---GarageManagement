@@ -1,66 +1,110 @@
 # Bug Report – Garage Management
 
-Nguồn chạy: repo `kimvux/Test---GarageManagement`, nhánh `test`, commit sản phẩm `ba91fa7f7cffd18e691b7ad66e79bf25aed0c460`. Ngày xác minh: **11/11/2026**. Backend/frontend giữ nguyên.
+Lượt chạy P1 ngày **11/11/2026**, báo cáo lúc **21:43:25 GMT+7**: **82 test case, 43 Pass, 39 Fail, 0 Pending, 0 Skipped**. Repo `kimvux/Test---GarageManagement`, nhánh `test`, HEAD nguồn `a408c91f5234dc74e0de913095ca53d7a79e9156`; mã sản phẩm không thay đổi so với `ba91fa7f7cffd18e691b7ad66e79bf25aed0c460`. Node `24.22.1`, Cypress `13.17.0`, PostgreSQL Docker local `autogara_test`, cổng `5433`.
 
-Kết quả P1: **82 lượt, 56 Pass, 26 Fail, 0 Pending, 0 Skipped**. Bằng chứng từng assertion: [p1-results.md](verification/2026-11-11/p1-results.md) và [p1-results.json](verification/2026-11-11/p1-results.json).
+Nguồn expected là **Test Case.xlsx.pdf** (các nhóm TC-AUTH/ORD/PRT/INV) và **GOP_Y_LAB3.md**. Mã TC đã đối chiếu tài liệu được cung cấp. Không lấy expected từ hành vi hiện tại của ứng dụng.
 
-**Không đồng nhất 26 Fail với 26 bug đã được duyệt.** Có ca fail vì ứng dụng sai yêu cầu được nêu rõ; có ca kiểm tra hợp đồng lỗi HTTP hoặc quy tắc biên cần đối chiếu Excel. Hai loại được phân biệt dưới đây. Không sửa expected chỉ để khớp code hiện tại.
+Bằng chứng đầy đủ: [p1-results.json](verification/2026-11-11/p1-results.json), [p1-results.md](verification/2026-11-11/p1-results.md). Mỗi dòng dưới đây dẫn tới đúng mã TC trong các báo cáo này; tên spec và dòng assertion nằm trong lỗi tương ứng. Toàn bộ **39 ca thất bại đều là `AssertionError`**; lượt chạy không có lỗi cú pháp, lỗi custom command hay lỗi hook làm bỏ qua test.
 
-Mỗi bước tái hiện bắt đầu từ `cy.task('db:seed')`, đăng nhập bằng tài khoản seed và chỉ gọi backend `http://localhost:3000`. Chạy `npm run test:api` hoặc `npm run test:ui`; mở `npm run cy:open` để xem từng spec. File report có đầy đủ tên spec và dòng assertion.
+## Cách tái hiện chung
 
-## 1. Sai lệch có yêu cầu rõ trong tài liệu
+1. Tại `tests/`, mở Docker Desktop và chạy `npm test`; môi trường chạy Express thật và PostgreSQL local. Có thể dùng `npm run cy:open` rồi chọn spec để xem từng thao tác.
+2. Mỗi ca bắt đầu bằng `cy.task('db:seed')`, độc lập với kết quả ca trước. Các id số trong bảng đúng dữ liệu seed: C1/V1/P1/O1 = 1, O2 = 2, O3 = 3, O4 = 4, O5 = 5.
+3. Với API, đăng nhập qua `POST http://localhost:3000/api/auth/login`, lấy token rồi gửi `Authorization: Bearer <token>`. Vai trò **QL** là `admin/admin123` (`quan_ly`); **LT** là `letan1/letan123` (`nhan_vien_le_tan`). Mọi đường dẫn dưới đây đều thuộc `http://localhost:3000`.
+4. Với UI, Cypress gọi `cy.useLocalApi()` để chuyển tiếp request đến backend thật local trước khi đăng nhập. Không mở giao diện bên ngoài Cypress để tái hiện các ca này.
 
-Nguồn: `SE104_Report_final.docx`, mục 1.1 và UC-03; mục 3.8.1 trích trong `GOP_Y_LAB3.md`; các TC-AUTH có sẵn trên nhánh nhóm.
+**Trạng thái của tất cả phát hiện P1 dưới đây: New.** Đây là kết quả đã quan sát bằng test, chưa phải trạng thái Confirmed do nhóm duyệt. Mức độ là đề xuất. Một nguyên nhân có thể ảnh hưởng nhiều TC; mỗi TC Fail có mã phát hiện riêng để không mất dấu kết quả.
 
-| Mã phát hiện | TC và vị trí | Cách tái hiện / thực tế đã quan sát | Kỳ vọng và căn cứ | Mức độ đề xuất |
-|---|---|---|---|---|
-| BUG-AUTH-01 | AUTH-11, `api/auth.cy.js` | Login admin; `exp - iat` bằng **28.800 giây** | **43.200 giây / 12h**, SRS 1.1.1 và TC nhóm hiện có | Trung bình |
-| BUG-AUTH-02 | AUTH-16, AUTH-17, `api/auth.cy.js` | Token `nhan_vien_le_tan` gọi thêm phụ tùng / nhập kho; API trả **200** | **403**, theo bảng quyết định TC-AUTH của nhóm; UI ẩn nút không thay thế phân quyền API | Cao |
-| BUG-AUTH-03 | AUTH-18, `api/auth.cy.js` | Lễ tân gọi `GET /api/users`; API trả **200** | **403**, theo TC-AUTH-18 có sẵn | Cao |
-| BUG-INV-01 | INV-07/08/09, `api/invoices.cy.js` | Lập hóa đơn lần lượt cho O1 `tiep_nhan`, O5 `dang_sua`, O4 `huy`; số hóa đơn tăng từ **1 lên 2** trong từng ca | Chỉ lập cho phiếu **hoàn thành và chưa có hóa đơn**; từ chối, DB không đổi. UC-03 nêu lỗi **400** nếu chưa hoàn thành | Cao |
-| BUG-INV-02 | INV-06, `api/invoices.cy.js` | O2 có `payment_method='bitcoin'`; số hóa đơn vẫn tăng **1 → 2** | Chỉ 3 phương thức **Tiền mặt / Chuyển khoản / Thẻ**, SRS 1.1.7 | Trung bình |
-| BUG-INV-03 | INV-17, `ui/invoices.cy.js` | Mở lập hóa đơn O2; dropdown chỉ có `tien_mat`, `chuyen_khoan` | Phải có lựa chọn **Thẻ**, SRS 1.1.7. API nhận `the` không chứng minh UI hỗ trợ phương thức này | Trung bình |
-| BUG-INV-04 | INV-19, `api/invoices.cy.js` | Thêm P1×1 vào O3 đã thanh toán; API trả **200** | Chứng từ đã chốt phải bất biến; từ chối thay đổi làm lệch chi tiết hóa đơn. Căn cứ SRS 1.1.7 về tính bất biến | Cao |
-| BUG-ORD-01 | ORD-13, `api/orders.cy.js` | Cập nhật O1 với `status='khong_hop_le'`; API trả **200** | Không chấp nhận trạng thái ngoài vòng đời được quy định và Hủy, SRS 1.1.3 | Cao |
+Cột thực tế chỉ khẳng định dữ liệu đã được assertion quan sát. Khi ca dừng ngay ở HTTP sai, những assertion DB phía sau chưa chạy; không suy ra việc tạo bản ghi hoặc thay đổi tổng tiền từ mã 200. Những kiểm tra rollback đã thực sự chạy được nêu riêng phía dưới.
 
-Các ca AUTH được giữ từ bộ nhóm, không viết thêm module nhân viên P2 hoặc lặp lại kiểm tra tự xóa tài khoản; TC-AUTH-19 vẫn đảm nhiệm trường hợp đó.
+## TC-AUTH – Xác thực và phân quyền (4 Fail)
 
-## 2. Phát hiện cần chốt quy tắc biên / hợp đồng HTTP
+Spec: `cypress/e2e/api/auth.cy.js`.
 
-Trạng thái các dòng này là **cần xác nhận yêu cầu**. Chưa có file Excel để khẳng định đây là expected cuối cùng đã được nhóm duyệt. Dữ liệu thực tế và assertion vẫn được giữ để đánh giá minh bạch.
+| Mã lỗi | Mã TC | Mức độ đề xuất | Bước tái hiện sau seed | Expected theo PDF | Thực tế đã quan sát |
+|---|---|---|---|---|---|
+| BUG-AUTH-001 | TC-AUTH-11 | Trung bình | QL: `POST /api/auth/login` với `{"username":"admin","password":"admin123"}`; giải mã payload JWT, tính `exp-iat`. | `43200` giây, tức 12 giờ. | `28800` giây, tức 8 giờ; assertion `expected 28800 to equal 43200`. |
+| BUG-AUTH-002 | TC-AUTH-16 | Cao | LT: `POST /api/parts` với `{"name":"Gạt mưa","price":90000}`. | `403`; chỉ QL được quản lý kho. | HTTP `200`, expected `403`. |
+| BUG-AUTH-003 | TC-AUTH-17 | Cao | LT: `POST /api/parts/1/restock` với `{"qty":5}`. | `403`. | HTTP `200`, expected `403`. |
+| BUG-AUTH-004 | TC-AUTH-18 | Cao | LT: `GET /api/users`. | `403`; danh sách nhân viên chỉ dành cho QL. | HTTP `200`, expected `403`. |
 
-| Mã phát hiện | TC | Dữ liệu / thực tế | Kỳ vọng đang đề xuất và điều cần chốt |
-|---|---|---|---|
-| REVIEW-INV-01 | INV-04, INV-05 | O2 có `discount=-1` hoặc `500001`; hóa đơn vẫn được thêm, số bản ghi **1 → 2** | Giảm giá phải trong `[0, tổng tiền]`; từ chối thay vì tăng tiền hoặc sinh tổng âm. Cần chốt miền hợp lệ trong Excel |
-| REVIEW-INV-02 | INV-10 | Lập lại cho O3 đã có hóa đơn; **500**, DB không thêm bản ghi | Từ chối nghiệp vụ **400**. Quy tắc không lập trùng rõ theo UC-03; **mã HTTP cụ thể** cần được nhóm chốt |
-| REVIEW-INV-03 | INV-11, INV-12 | Thiếu `repair_order_id` hoặc dùng `99999`; **500**, DB không đổi | Lần lượt **400/404** và thông báo nghiệp vụ rõ. Cần chốt hợp đồng lỗi API |
-| REVIEW-ORD-01 | ORD-08, ORD-18 | Vượt tồn P1 hoặc lấy P3 hết hàng: API **500**; tồn kho, tổng phiếu và dòng phụ tùng **đều rollback đúng** | Ca fail ở yêu cầu **4xx**; không báo nhầm rằng ứng dụng cho xuất vượt kho. Cần chốt mã lỗi nghiệp vụ |
-| REVIEW-ORD-02 | ORD-16 | Thêm S1 với `qty=0`; API **200** | Số lượng dùng dịch vụ phải là số nguyên dương; xác nhận quy tắc thay vì tự mặc định `0 → 1` |
-| REVIEW-ORD-03 | ORD-17 | Thêm P1 với `qty=-1`; API **200** | Từ chối số lượng âm, không làm tăng kho / giảm tổng phiếu. Cần đối chiếu TC chi tiết |
-| REVIEW-PRT-01 | PRT-04, PRT-05 | Tạo phụ tùng có `price=-1` hoặc `stock_qty=-1`; API **200** | Không lưu giá/tồn âm. Góp ý có ví dụ tên PRT-05 nhưng chưa có đầy đủ hàng Excel để xác nhận dữ liệu và expected |
-| REVIEW-PRT-02 | PRT-07 | Tạo với `min_stock=0`, lưu thành **5** | Giữ 0 nếu 0 là ngưỡng hợp lệ. Cần xác nhận miền ngưỡng tồn tối thiểu; không suy ngược quy tắc từ toán tử `||` trong code |
-| REVIEW-PRT-03 | PRT-09 | Xóa P1 đang được dùng; **500**, phụ tùng và dòng O2 **vẫn còn** | Bảo vệ dữ liệu đang tham chiếu và trả **4xx** rõ ràng. Fail hiện tại ở mã phản hồi, không phải dữ liệu bị xóa |
-| REVIEW-PRT-04 | PRT-12 | Restock P1 với `qty=1.5`; **500**, kho vẫn 10 | Validate số nguyên dương và trả **4xx**; cần chốt quy tắc số lượng nguyên và mã lỗi |
-| REVIEW-PRT-05 | PRT-16 | Restock id `99999`; API báo **200** mặc dù không có phụ tùng | Trả **404**, không thông báo thành công cho đối tượng không tồn tại. Cần xác nhận hợp đồng API |
+TC-AUTH-19 kiểm tra QL tự xóa chính mình **Pass**. Không thêm ca nhân viên giả dùng vai trò ngoài `quan_ly` và `nhan_vien_le_tan`.
 
-Các ca đang Pass cũng có quy tắc cần chốt, ví dụ giảm giá đúng toàn bộ tổng tiền cho ra hóa đơn 0 (INV-03), mã API dùng cho Thẻ và mã thành công 200. Xem `TRACEABILITY.md` trước khi ký xác nhận phủ Excel.
+## TC-ORD – Phiếu sửa chữa (12 Fail)
 
-## 3. Dashboard – giai đoạn 2
+Spec: `cypress/e2e/api/orders.cy.js`. Tất cả request trong bảng dùng LT.
 
-Chạy riêng `npm run test:dashboard`: **5 lượt, 4 Pass / 1 Fail / 0 Pending / 0 Skipped**.
+| Mã lỗi | Mã TC | Mức độ đề xuất | Bước tái hiện sau seed | Expected theo PDF | Thực tế đã quan sát |
+|---|---|---|---|---|---|
+| BUG-ORD-001 | TC-ORD-04 | Cao | `POST /api/repair-orders` với `{"customer_id":1,"vehicle_id":2}`; V2 thuộc C2. | `400`; báo xe không thuộc khách hàng. | HTTP `200`, expected `400`. |
+| BUG-ORD-002 | TC-ORD-05 | Trung bình | `POST /api/repair-orders` với `{"customer_id":99999,"vehicle_id":1}`. | `400` hoặc `404`, thông báo rõ ràng. | HTTP `500`, ngoài cả hai mã được PDF chấp nhận. |
+| BUG-ORD-003 | TC-ORD-09 | Cao | O3 đã thanh toán: `PUT /api/repair-orders/3/status` với `{"status":"tiep_nhan"}`. | `400`; O3 giữ `da_thanh_toan`. | HTTP `200`, expected `400`; assertion dừng trước kiểm tra lại trạng thái. |
+| BUG-ORD-004 | TC-ORD-10 | Cao | O4 đã hủy: `PUT /api/repair-orders/4/status` với `{"status":"dang_sua"}`. | `400`; O4 giữ `huy`. | HTTP `200`, expected `400`. |
+| BUG-ORD-005 | TC-ORD-11 | Cao | O1 đang tiếp nhận: `PUT /api/repair-orders/1/status` với `{"status":"hoan_thanh"}`. | `400`; không bỏ qua bước Đang sửa. | HTTP `200`, expected `400`. |
+| BUG-ORD-006 | TC-ORD-12 | Cao | `PUT /api/repair-orders/1/status` với `{"status":"abc"}`. | `400`; trạng thái không đổi. | HTTP `200`, expected `400`. |
+| BUG-ORD-007 | TC-ORD-13 | Trung bình | `PUT /api/repair-orders/1/status` với `{}`. | `400`; `Thiếu thông tin`. | HTTP `500`, expected `400`. |
+| BUG-ORD-008 | TC-ORD-14 | Cao | Xác minh P2 tồn 5; `PUT /api/repair-orders/5/status` với `{"status":"huy"}`; GET O5 và truy vấn tồn kho P2. | Hủy O5 phải hoàn P2 × 1: tồn tăng `5 → 6`. | HTTP `200`, O5 đã là `huy`, nhưng tồn P2 vẫn **5**, expected **6**. |
+| BUG-ORD-009 | TC-ORD-16 | Trung bình | `POST /api/repair-orders/1/services` với `{"service_id":99999,"qty":1}`. | `404` hoặc `400`; `Dịch vụ không tồn tại`. | HTTP `500`, ngoài các mã được PDF chấp nhận. |
+| BUG-ORD-010 | TC-ORD-17 | Cao | O2 đã hoàn thành: `POST /api/repair-orders/2/services` với `{"service_id":2,"qty":1}`. | `400`; tổng phiếu không đổi. | HTTP `200`, expected `400`; assertion tổng phiếu phía sau chưa chạy. |
+| BUG-ORD-011 | TC-ORD-18 | Cao | O3 đã thanh toán: `POST /api/repair-orders/3/services` với `{"service_id":2,"qty":1}`. | `400`. | HTTP `200`, expected `400`. |
+| BUG-ORD-012 | TC-ORD-19 | Cao | S3 tạm ngưng: `POST /api/repair-orders/1/services` với `{"service_id":3,"qty":1}`. | `400`; báo dịch vụ đã tạm ngưng. | HTTP `200`, expected `400`. |
 
-| Mã | TC | Thực tế | Kỳ vọng |
-|---|---|---|---|
-| BUG-DASH-01 | TC-DASH-02, `ui/dashboard.phase2.cy.js` | Không tìm thấy thẻ **Số xe** | Hiển thị số xe, theo SRS 3.8.1 trong góp ý; seed có 2 xe |
+## TC-PRT – Kho phụ tùng (13 Fail)
 
-Bốn thẻ yêu cầu còn lại được kiểm tra riêng và Pass: số khách hàng, số phiếu đang xử lý, doanh thu hôm nay, doanh thu tháng này. **Không kiểm tra “đúng 6 thẻ”.** Tên TC-DASH là mã tạm để tra cứu, chưa ánh xạ Excel.
+Spec: `cypress/e2e/api/parts.cy.js`.
 
-Các module P2 khác và REG-01 báo cáo tháng 2 không nằm trong lệnh P1 mặc định. Việc dashboard của sản phẩm tải các API thống kê khi login không đồng nghĩa bộ P1 đã kiểm thử đầy đủ module báo cáo.
+| Mã lỗi | Mã TC | Mức độ đề xuất | Bước tái hiện sau seed | Expected theo PDF | Thực tế đã quan sát |
+|---|---|---|---|---|---|
+| BUG-PRT-001 | TC-PRT-03 | Trung bình | LT: `POST /api/repair-orders/1/parts` với `{"part_id":1,"qty":11}`; GET kho và kiểm tra phiếu. | `400`; `Không đủ tồn kho (còn 10)`; P1 vẫn 10. | HTTP **500**, expected **400**. Các assertion chạy trước đã xác minh P1 vẫn 10, O1 tổng 0 và không thêm dòng phụ tùng. **Rollback đúng**. |
+| BUG-PRT-002 | TC-PRT-04 | Cao | LT: `POST /api/repair-orders/1/parts` với `{"part_id":1,"qty":0}`. | `400`; phiếu và tồn kho không đổi. | HTTP `200`, expected `400`; assertion dữ liệu phía sau chưa chạy. |
+| BUG-PRT-003 | TC-PRT-05 | Cao | LT: `POST /api/repair-orders/1/parts` với `{"part_id":1,"qty":-1}`. | `400`; tồn kho không đổi. | HTTP `200`, expected `400`. |
+| BUG-PRT-004 | TC-PRT-06 | Trung bình | LT: `POST /api/repair-orders/1/parts` với `{"part_id":1}`; không gửi `qty`. | PDF cho phép `400`, hoặc mặc định qty=1 và trừ kho đúng 1 (HTTP `200`, P1 còn 9). | HTTP `500`, không thuộc hai phương án hợp lệ. |
+| BUG-PRT-005 | TC-PRT-07 | Trung bình | LT: `POST /api/repair-orders/1/parts` với `{"part_id":1,"qty":"abc"}`. | `400`; `Số lượng không hợp lệ`. | HTTP `500`, expected `400`. Các assertion trước đó xác minh P1 vẫn 10, O1 tổng 0 và không có dòng mới. |
+| BUG-PRT-006 | TC-PRT-08 | Trung bình | LT: `POST /api/repair-orders/1/parts` với `{"part_id":99999,"qty":1}`. | `404` hoặc `400`; `Phụ tùng không tồn tại`. | HTTP `500`, ngoài hai mã PDF chấp nhận. Kho và O1 đã được xác minh giữ nguyên trước assertion HTTP. |
+| BUG-PRT-007 | TC-PRT-11 | Trung bình | LT: `DELETE /api/repair-orders/5/parts/99999`. | `404`. | HTTP `200`, expected `404`. |
+| BUG-PRT-008 | TC-PRT-15 | Trung bình | QL: `POST /api/parts/1/restock` với `{"qty":"abc"}`. | `400`. | HTTP `500`, expected `400`; GET kho trước assertion đã xác minh P1 vẫn 10. |
+| BUG-PRT-009 | TC-PRT-16 | Trung bình | QL: `POST /api/parts/1/restock` với `{"qty":2.5}`. | `400`; số lượng phải là số nguyên. | HTTP `500`, expected `400`; P1 vẫn 10 trong GET kho đã chạy. |
+| BUG-PRT-010 | TC-PRT-17 | Trung bình | QL: `POST /api/parts/99999/restock` với `{"qty":5}`. | `404`. | HTTP `200`, expected `404`, dù đối tượng không tồn tại. |
+| BUG-PRT-011 | TC-PRT-19 | Cao | QL: `POST /api/parts` với `{"name":"Gạt mưa","price":-90000}`. | `400`. | HTTP `200`, expected `400`. |
+| BUG-PRT-012 | TC-PRT-20 | Trung bình | QL: `POST /api/parts` với `{"name":"Ốc vít","price":1000,"min_stock":0}`; GET `/api/parts` tìm id vừa tạo. | `min_stock` lưu đúng **0**. | POST `200`, phụ tùng tồn tại nhưng `min_stock` là **5**, expected **0**. |
+| BUG-PRT-013 | TC-PRT-22 | Trung bình | QL: `DELETE /api/parts/2`; P2 đang có trong O5. | `400`; báo phụ tùng đang được sử dụng. | HTTP **500**, expected **400**. Assertion trước đó đã xác minh P2 vẫn tồn 5, dòng O5 vẫn còn và tổng O5 vẫn 400000. Không có bằng chứng phụ tùng bị xóa. |
 
-## 4. Quy trình xử lý và retest
+TC-PRT-09 **Pass**: khi thêm P1 vào phiếu không tồn tại, ứng dụng báo lỗi và giữ kho nguyên trạng theo PDF. TC-PRT-21 **Pass** ở đủ ba biên tồn P4 bằng 6/5/4; số phụ tùng cảnh báo lần lượt là 2/3/3, gồm nền P2 và P3.
 
-1. Với các lỗi có SRS rõ: tạo/cập nhật bug của nhóm, ghi spec, mã TC, seed, expected, actual và phiên bản sản phẩm.
-2. Với các dòng REVIEW: chốt điều kiện biên hoặc HTTP contract từ Excel/SRS trước khi kết luận bug. Nếu tài liệu chưa nói rõ, cập nhật yêu cầu được duyệt trước.
-3. Sửa sản phẩm trong luồng công việc của nhóm. Gói test này giữ nguyên `backend/` và `frontend/`.
-4. Chạy lại cùng lệnh. Không sửa expected theo hành vi sai; chỉ đổi expected khi có thay đổi yêu cầu được duyệt.
-5. Giữ báo cáo thực chạy của lần retest, cập nhật trạng thái bug dựa trên bằng chứng.
+## TC-INV – Hóa đơn và thanh toán (10 Fail)
+
+Spec API: `cypress/e2e/api/invoices.cy.js`. Trừ dòng UI, mọi request dùng LT. Payload chuẩn là `{"repair_order_id":2,"discount":0,"payment_method":"tien_mat"}`; bảng ghi đầy đủ payload của từng ca.
+
+| Mã lỗi | Mã TC | Mức độ đề xuất | Bước tái hiện sau seed | Expected theo PDF | Thực tế đã quan sát |
+|---|---|---|---|---|---|
+| BUG-INV-001 | TC-INV-04 | Cao | `POST /api/invoices` với `{"repair_order_id":2,"discount":500001,"payment_method":"tien_mat"}`. | `400`; không tạo hóa đơn khi giảm vượt tổng 1 đồng. | HTTP `200`, expected `400`; assertion số hóa đơn phía sau chưa chạy. |
+| BUG-INV-002 | TC-INV-05 | Cao | `POST /api/invoices` với `{"repair_order_id":2,"discount":-50000,"payment_method":"tien_mat"}`. | `400`. | HTTP `200`, expected `400`. |
+| BUG-INV-003 | TC-INV-06 | Cao | `POST /api/invoices` với `{"repair_order_id":2,"discount":"abc","payment_method":"tien_mat"}`. | `400`. | HTTP `200`, expected `400`. |
+| BUG-INV-004 | TC-INV-07 | Cao | O1 tiếp nhận: `POST /api/invoices` với `{"repair_order_id":1,"discount":0,"payment_method":"tien_mat"}`. | `400`; O1 giữ `tiep_nhan`. | HTTP `200`, expected `400`; kiểm tra trạng thái O1 phía sau chưa chạy. |
+| BUG-INV-005 | TC-INV-08 | Cao | O4 đã hủy: `POST /api/invoices` với `{"repair_order_id":4,"discount":0,"payment_method":"tien_mat"}`. | `400`. | HTTP `200`, expected `400`. |
+| BUG-INV-006 | TC-INV-09 | Trung bình | O3 đã có hóa đơn: `POST /api/invoices` với `{"repair_order_id":3,"discount":0,"payment_method":"tien_mat"}`. | `400`; `Phiếu đã được thanh toán`. | HTTP **500**, expected **400**. Ca rollback TC-INV-10 độc lập **Pass**: không tạo hóa đơn thứ hai, O3 và hóa đơn gốc giữ nguyên. |
+| BUG-INV-007 | TC-INV-11 | Cao | `POST /api/invoices` với `{"repair_order_id":2,"discount":0,"payment_method":"bitcoin"}`. | `400`. | HTTP `200`, expected `400`. |
+| BUG-INV-008 | TC-INV-12 | Trung bình | UI `cypress/e2e/ui/invoices.cy.js`: LT đăng nhập, vào Phiếu sửa chữa, mở O2/PS0002, bấm Lập hóa đơn, đọc các option `#inv-payment`. | Có đủ **Tiền mặt, Chuyển khoản, Thẻ**. | Chỉ **2** option; assertion `expected ... to have a length of 3 but got 2`. Giao diện hiện có Tiền mặt và Chuyển khoản; thiếu Thẻ. |
+| BUG-INV-009 | TC-INV-13 | Trung bình | `POST /api/invoices` với `{"repair_order_id":99999,"discount":0,"payment_method":"tien_mat"}`. | `404`. | HTTP `500`, expected `404`. |
+| BUG-INV-010 | TC-INV-14 | Trung bình | `POST /api/invoices` với `{}`. | `400`; `Thiếu thông tin`. | HTTP `500`, expected `400`. |
+
+TC-INV-10 **Pass** xác minh rollback bằng số hóa đơn, trạng thái O3, id hóa đơn và toàn bộ nội dung hóa đơn trước/sau. Không ghi nhận lỗi tạo trùng hóa đơn từ TC-INV-09. TC-INV-17 **Pass** qua UI với giảm 100000 và tổng phải thu 400000. TC-INV-15 **Pass**: hóa đơn giữ nguyên giá sau khi đổi giá S1.
+
+## Dashboard – chạy riêng giai đoạn 2
+
+Nguồn yêu cầu là SRS 3.8.1 trích trong `GOP_Y_LAB3.md`. Nhóm `TC-DASH` là mã bổ sung để tra cứu spec, **không nằm trong 82 mã TC của PDF** và không tính vào 39 Fail P1. Chạy riêng `npm run test:dashboard`; kiểm tra từng thẻ, không kiểm tra tổng số thẻ.
+
+Lượt chạy riêng đã hoàn tất: **5 ca, 4 Pass / 1 Fail / 0 Pending / 0 Skipped**. Bằng chứng: [dashboard-results.json](verification/2026-11-11/dashboard-results.json) và [dashboard-results.md](verification/2026-11-11/dashboard-results.md).
+
+| Mã lỗi | Mã tra cứu | Mức độ đề xuất | Tái hiện | Expected | Thực tế | Trạng thái |
+|---|---|---|---|---|---|---|
+| BUG-DASH-001 | TC-DASH-02 | Trung bình | Seed, QL đăng nhập qua Cypress, đọc các thẻ Dashboard | Có thẻ Số xe, seed có 2 xe | Không tìm thấy thẻ Số xe; assertion DOM thất bại | New |
+
+Bốn ca còn lại Pass: số khách hàng, phiếu đang xử lý, doanh thu hôm nay và doanh thu tháng này.
+
+## Xử lý và retest
+
+1. Nhóm đánh giá từng phát hiện New và chuyển Confirmed/Cannot Reproduce theo quy trình trong PDF; giữ liên kết mã TC và bằng chứng.
+2. Sửa ứng dụng theo expected đã có trong PDF/SRS; giữ nguyên assertion khi sản phẩm sai yêu cầu. Các file backend/frontend trong gói sửa test này không thay đổi.
+3. Chạy lại `npm test` trên phiên bản sản phẩm đã sửa. Giữ bản báo cáo mới trong thư mục xác minh riêng để so sánh với lượt 11/11/2026.
+4. Khi retest Pass, cập nhật trạng thái xử lý của đúng bug; một test Pass không tự xác nhận tất cả lỗi cùng nguyên nhân đã được sửa.

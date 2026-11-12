@@ -1,55 +1,56 @@
-# Xác minh bộ Cypress – 11/11/2026
+# Xác minh bản sửa theo Test Case.xlsx.pdf – 11/11/2026
 
-Bản sản phẩm đối chiếu: repo nhóm `kimvux/Test---GarageManagement`, nhánh `test`, commit `ba91fa7f7cffd18e691b7ad66e79bf25aed0c460`. Toàn bộ thay đổi nằm trong `tests/`; đã kiểm tra không có diff trong `backend/` và `frontend/`.
+Repo nguồn: `kimvux/Test---GarageManagement`, nhánh `test`, commit `a408c91f5234dc74e0de913095ca53d7a79e9156`. Mã backend/frontend giữ nguyên. Thay đổi nằm trong `tests/`.
 
 ## Kết quả thực chạy
 
+Bộ chính gồm **đúng 82 mã duy nhất trong PDF**: AUTH20, ORD22, PRT22, INV18. Hai lượt chạy toàn bộ cho cùng tập Pass/Fail. Không chỉ đếm số lượng: danh mục trong `scripts/check-tests.js` đối chiếu từng mã với đúng file API/UI, phát hiện thiếu, trùng, sai vị trí hoặc spec thừa.
+
 | Spec | Tổng | Pass | Fail |
 |---|---:|---:|---:|
-| `cypress/e2e/ui/invoices.cy.js` | 3 | 2 | 1 |
-| `cypress/e2e/ui/login.cy.js` | 1 | 1 | 0 |
-| `cypress/e2e/ui/orders.cy.js` | 3 | 3 | 0 |
-| `cypress/e2e/ui/parts.cy.js` | 3 | 3 | 0 |
-| `cypress/e2e/api/auth.cy.js` | 19 | 15 | 4 |
-| `cypress/e2e/api/invoices.cy.js` | 19 | 9 | 10 |
-| `cypress/e2e/api/orders.cy.js` | 18 | 13 | 5 |
-| `cypress/e2e/api/parts.cy.js` | 16 | 10 | 6 |
-| **P1** | **82** | **56** | **26** |
+| `ui/invoices.cy.js` | 3 | 2 | 1 |
+| `ui/login.cy.js` | 1 | 1 | 0 |
+| `ui/orders.cy.js` | 1 | 1 | 0 |
+| `api/auth.cy.js` | 19 | 15 | 4 |
+| `api/invoices.cy.js` | 15 | 6 | 9 |
+| `api/orders.cy.js` | 21 | 9 | 12 |
+| `api/parts.cy.js` | 22 | 9 | 13 |
+| **Tổng** | **82** | **43** | **39** |
 
-**Pending = 0; Skipped = 0.** Lần chạy lại có cùng tập test và cùng trạng thái Pass/Fail với lần chạy đầu. Toàn bộ 26 lỗi của lần cuối đều là `AssertionError`, không có lỗi cú pháp, lỗi compile spec hoặc Cypress command trong kết quả đã ghi. Điều này xác nhận bộ test đã thực thi trong môi trường ghi dưới đây; không phải cam kết phần mềm không bao giờ có lỗi ở mọi môi trường.
+**Pending 0, Skipped 0.** Toàn bộ 39 lỗi trong báo cáo là `AssertionError` đối chiếu ứng dụng với expected của PDF. Không ghi nhận lỗi cú pháp, compile spec, Cypress command hoặc hook làm bỏ qua các ca sau. Đây là kết quả tại môi trường được mô tả dưới đây; không cam kết mọi môi trường đều không có lỗi.
 
-Dashboard chạy riêng giai đoạn 2: **5 test, 4 Pass / 1 Fail / 0 Pending / 0 Skipped**. Test fail vì thiếu thẻ số xe theo SRS 3.8.1. Không kiểm tra tổng số thẻ.
+Ví dụ phân biệt rõ: PRT03 rollback kho đúng nhưng API trả500 thay vì400; INV09 trả500 thay vì400 nhưng INV10 kiểm tra rollback hóa đơn **Pass**. Không kết luận “tạo hóa đơn trùng” chỉ từ việc sai mã HTTP. Xem [BUG_REPORT.md](BUG_REPORT.md) cho từng ca.
 
-Chi tiết: [P1 JSON](verification/2026-11-11/p1-results.json), [P1 Markdown](verification/2026-11-11/p1-results.md), [dashboard JSON](verification/2026-11-11/dashboard-results.json), [dashboard Markdown](verification/2026-11-11/dashboard-results.md). Phân loại yêu cầu rõ và quy tắc cần chốt tại [BUG_REPORT.md](BUG_REPORT.md).
+Bằng chứng: [P1 JSON](verification/2026-11-11/p1-results.json), [P1 Markdown](verification/2026-11-11/p1-results.md), [P1 CSV](verification/2026-11-11/p1-results.csv). CSV có mã TC, trạng thái và lỗi thực tế để mở bằng Excel.
 
-## Môi trường xác minh
+## Môi trường
 
-| Thành phần | Thực tế sử dụng |
+| Thành phần | Đã dùng |
 |---|---|
-| Hệ điều hành | Linux Debian 13, x64 |
-| Node | 24.22.1 |
-| Cypress | 13.17.0 |
-| Browser | Electron 118 đi kèm Cypress, headless |
-| Backend/frontend | Mã sản phẩm nguyên trạng của nhánh nhóm; Express thật, giao diện thật |
-| CSDL | PostgreSQL **16.15 thật**, local port 5433, database autogara_test; dùng cùng seed và schema |
-| API UI | Chuyển tiếp bằng cy.useLocalApi; không stub response, không gọi API Render/Neon |
+| Hệ điều hành | Linux Debian13, x64 |
+| Node / Cypress | 24.22.1 / 13.17.0 |
+| Browser | Electron118 đi kèm Cypress, headless; Xvfb |
+| Docker Engine | 29.9.2, daemon local |
+| PostgreSQL | Container `autogara-test`, image `postgres:16`, PostgreSQL16.15 |
+| Database | Local `127.0.0.1:5433/autogara_test` |
+| Backend / UI | Express và giao diện thật, localhost3000/5500 |
+| API UI | `cy.useLocalApi()` chuyển tiếp request thật, không stub response |
 
-**Môi trường xác minh không có Docker Engine**, nên đã khởi chạy PostgreSQL 16 trực tiếp để thực thi Cypress. Gói giao cho người dùng vẫn tạo/bật `postgres:16` qua Docker Desktop theo góp ý. Chưa thực thi trực tiếp bước tạo container Docker, Windows CMD/PowerShell hoặc chế độ Cypress Open trên Windows; không tuyên bố các bước này đã được chạy ở đây.
+Đã thực hiện tải image, tạo container bằng `npm run db:up`, `npm ci`, `npm run setup` và chạy `npm test` qua runner nguyên bản. Lượt đầu cố ý truyền URL cũ `CYPRESS_baseUrl=https://example.invalid` và `CYPRESS_apiUrl=https://example.invalid`; runner loại cấu hình cũ và vẫn chạy đủ 82 ca local. Không gọi API Render hoặc CSDL Neon.
 
-## Những vấn đề kỹ thuật đã kiểm tra
+Môi trường cloud thiếu Xvfb và không cho ghi cấu hình Cypress vào home. Đã tải các gói Debian chính thức, kiểm tra SHA256, giải nén Xvfb vào thư mục scratch và cấu hình `PATH`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `CYPRESS_CACHE_FOLDER` cho phiên xác minh. Đây là thiết lập riêng của môi trường kiểm chứng, không thêm đường dẫn cloud vào mã test hoặc yêu cầu người dùng Windows/macOS làm theo.
 
-- Kiểm tra cú pháp đủ **22 file JavaScript**, 87 tiêu đề test tĩnh (82 P1 + 5 dashboard P2); không có .only/.skip hay helper API cũ trong spec.
-- 8 spec P1 được Cypress nạp và chạy thật. API và UI đều có PostgreSQL phía sau, không dùng mockGarage hoặc dữ liệu giả lập trả từ intercept.
-- Lần chạy cuối cố ý truyền `CYPRESS_baseUrl=https://example.invalid` và `CYPRESS_apiUrl=https://example.invalid`; runner loại các cấu hình định tuyến cũ và vẫn hoàn tất đủ 82 test bằng local API. Không có yêu cầu người chạy sửa .cy.js để đổi môi trường.
-- Sau khi bộ test kết thúc, đã truy vấn lại CSDL và xác nhận seed phục hồi: users=2, customers=2, vehicles=2, parts=4, repair_orders=5, invoices=1, P1.stock_qty=10.
-- Sau cleanup, đã kiểm tra cổng **3000 và 5500 đóng**. Không để backend/frontend của runner chiếm port cho lần chạy tiếp theo.
-- C8 xuất được báo cáo backend sau khi dừng: **Statements/Lines 81,53%; Branches 66,66%; Functions 100%** cho lần P1 cuối. Không suy ra phần mềm đạt yêu cầu từ tỷ lệ coverage.
-- `package.json` và `package-lock.json` có cùng danh sách dependency; `git diff --check` đạt.
+## Kiểm tra trước bàn giao
 
-Báo cáo coverage và ảnh lỗi được tạo tại máy khi chạy, không kèm trong gói ZIP. Gói chứa kết quả JSON/Markdown để đọc lại các assertion.
+- Cú pháp 21 file JavaScript đạt; 82 mã PDF đúng vị trí, không thiếu/trùng; 5 ca dashboard bổ sung được loại khỏi lệnh chính.
+- Không `.skip/.only`, helper API cũ, vai trò kỹ thuật hoặc live-smoke. UI có seed và `cy.useLocalApi()`.
+- Tiền điều kiện liên quan ca trước được dựng lại độc lập trong ORD20/21 và INV10/15.
+- Sau cleanup: CSDL trở về seed, P1 tồn 10; cổng3000/5500 đóng. PostgreSQL được giữ để lần sau chạy nhanh.
+- c8 của lượt toàn bộ: Statements/Lines 81,65%; Branches 73,55%; Functions 100%. Coverage chỉ đo backend/server.js, không chứng minh ứng dụng đạt yêu cầu.
+- `git diff --check` đạt; không có thay đổi trong `backend/` hoặc `frontend/`.
 
-## Giới hạn yêu cầu còn lại
+Windows CMD/PowerShell, macOS và chế độ tương tác Cypress Open chưa được thực thi trong phiên Linux này. Các lệnh chạy trong hướng dẫn dùng Node và Docker CLI tương thích nhiều nền tảng; giới hạn này được nêu để không đánh đồng kiểm chứng Linux với chạy trên mọi máy.
 
-**File Excel Test Case chưa được cung cấp.** Mã ORD/PRT/INV/DASH mới đang là mã tạm và một số miền dữ liệu/mã HTTP là đề xuất cần chốt. [TRACEABILITY.md](TRACEABILITY.md) liệt kê rõ từng ca. Chưa thể xác nhận khớp mã Excel hoặc phủ toàn bộ Test Case của nhóm.
+## Dashboard bổ sung
 
-Giữ nguyên các assertion theo SRS dù sản phẩm fail. Các dòng REVIEW cần chốt yêu cầu trước khi kết luận bug; không chuyển expected theo code hiện tại để làm đẹp kết quả.
+Chạy riêng `npm run test:dashboard` theo năm yêu cầu tại SRS3.8.1 trong góp ý. Các mã TC-DASH là định danh nội bộ cho nhóm bổ sung, **không thuộc82 mã PDF**. Không kiểm tra “đúng6 thẻ”. **Kết quả: 5 ca, 4 Pass / 1 Fail / 0 Pending / 0 Skipped**; Fail ở thẻ Số xe bị thiếu. Bằng chứng được lưu riêng tại `verification/2026-11-11/dashboard-results.*`.

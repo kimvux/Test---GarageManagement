@@ -1,7 +1,8 @@
 {
-  "date": "2026-11-11T01:53:22.309Z",
+  "date": "2026-11-11T14:44:08.518Z",
   "mode": "dashboard",
-  "sourceCommit": "ba91fa7f7cffd18e691b7ad66e79bf25aed0c460",
+  "sourceCommit": "a408c91f5234dc74e0de913095ca53d7a79e9156",
+  "testCaseSource": "Test Case.xlsx.pdf",
   "node": "24.22.1",
   "cypress": "13.17.0",
   "database": "PostgreSQL local / autogara_test :5433",
@@ -15,26 +16,31 @@
       "spec": "cypress/e2e/ui/dashboard.phase2.cy.js",
       "tests": [
         {
+          "id": "TC-DASH-01",
           "title": "Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-01 – Hiển thị số khách hàng",
           "state": "passed",
           "error": null
         },
         {
+          "id": "TC-DASH-02",
           "title": "Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-02 – Hiển thị số xe",
           "state": "failed",
           "error": "AssertionError: Timed out retrying after 6000ms: Expected to find content: '/^(Số xe|Tổng (số )?xe)$/i' within the selector: '#dash-stats .stat-label' but never did.\n    at card (webpack://autogara-tests/./cypress/e2e/ui/dashboard.phase2.cy.js:4:5)\n    at Context.eval (webpack://autogara-tests/./cypress/e2e/ui/dashboard.phase2.cy.js:15:44)"
         },
         {
+          "id": "TC-DASH-03",
           "title": "Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-03 – Hiển thị số phiếu đang xử lý",
           "state": "passed",
           "error": null
         },
         {
+          "id": "TC-DASH-04",
           "title": "Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-04 – Hiển thị doanh thu hôm nay",
           "state": "passed",
           "error": null
         },
         {
+          "id": "TC-DASH-05",
           "title": "Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-05 – Hiển thị doanh thu tháng này",
           "state": "passed",
           "error": null

@@ -1,0 +1,8 @@
+﻿"Mã TC","Spec","Tên test","Trạng thái","Lỗi thực tế"
+"TC-DASH-01","cypress/e2e/ui/dashboard.phase2.cy.js","Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-01 – Hiển thị số khách hàng","Pass",""
+"TC-DASH-02","cypress/e2e/ui/dashboard.phase2.cy.js","Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-02 – Hiển thị số xe","Fail","AssertionError: Timed out retrying after 6000ms: Expected to find content: '/^(Số xe|Tổng (số )?xe)$/i' within the selector: '#dash-stats .stat-label' but never did.
+    at card (webpack://autogara-tests/./cypress/e2e/ui/dashboard.phase2.cy.js:4:5)
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/ui/dashboard.phase2.cy.js:15:44)"
+"TC-DASH-03","cypress/e2e/ui/dashboard.phase2.cy.js","Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-03 – Hiển thị số phiếu đang xử lý","Pass",""
+"TC-DASH-04","cypress/e2e/ui/dashboard.phase2.cy.js","Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-04 – Hiển thị doanh thu hôm nay","Pass",""
+"TC-DASH-05","cypress/e2e/ui/dashboard.phase2.cy.js","Giai đoạn 2 – Dashboard theo SRS 3.8.1 > TC-DASH-05 – Hiển thị doanh thu tháng này","Pass",""

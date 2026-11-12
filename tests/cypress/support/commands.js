@@ -44,7 +44,9 @@ Cypress.Commands.add('useLocalApi', () => {
 });
 
 Cypress.Commands.add('loginLocal', (role = 'quan_ly') => {
-  return cy.api('POST', '/api/auth/login', ACCOUNTS[role]).then(res => {
+  const account = ACCOUNTS[role];
+  if (!account) throw new Error(`Vai trò không hỗ trợ: ${role}`);
+  return cy.api('POST', '/api/auth/login', account).then(res => {
     expect(res.status, 'đăng nhập seed cho UI').to.eq(200);
     cy.visit('/', { onBeforeLoad(win) {
       win.localStorage.setItem('autocare_token', res.body.token);

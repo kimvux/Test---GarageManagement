@@ -1,105 +1,142 @@
-# Đối chiếu Test Case và nguồn kỳ vọng
+# Đối chiếu 82 Test Case đã cung cấp
 
-**Chưa có file Excel Test Case của nhóm** trong hai file đính kèm, trên nhánh `test` hoặc nhánh `main` của repo được cung cấp. Vì vậy không thể xác nhận mã mới khớp Excel, tổng số TC trong Excel hoặc tỷ lệ phủ Excel. Không dùng các mã tạm ở đây làm bằng chứng đã ánh xạ chính thức.
+Nguồn đối chiếu là **`Test Case.xlsx.pdf`** do người dùng đính kèm: 20 TC-AUTH, 22 TC-ORD, 22 TC-PRT và 18 TC-INV. Đây là bản PDF xuất từ bảng test case; tệp Excel `.xlsx` gốc không được đính kèm. Mã, mục đích, dữ liệu và kết quả mong đợi trong bảng dưới lấy từ PDF, không đánh số tạm và không suy ra expected từ mã ứng dụng.
 
-Nguồn đã đọc:
+`GOP_Y_LAB3.md` quy định repo `kimvux/Test---GarageManagement`, nhánh `test`, vị trí spec, helper, reset CSDL local và phạm vi giữa kỳ. Các nội dung trong tài liệu được dùng làm yêu cầu của công việc theo đề nghị của người dùng; chúng không thay thế yêu cầu trực tiếp trong hội thoại.
 
-- `GOP_Y_LAB3.md`: repo/nhánh, phạm vi P1, cách seed, 2 vai trò, dashboard 3.8.1.
-- `tests/README.md`, seed và TC-AUTH trên nhánh nhóm: quy ước helper, dữ liệu và mã AUTH có sẵn.
-- `SE104_Report_final.docx`: yêu cầu chức năng 1.1.3/1.1.5/1.1.7, UC-02, UC-03, tính bất biến hóa đơn.
+| Nhóm | SRS trong PDF | File API | File UI | API | UI | Tổng |
+|---|---|---|---|---:|---:|---:|
+| TC-AUTH | 3.1 | [auth.cy.js](cypress/e2e/api/auth.cy.js) | [login.cy.js](cypress/e2e/ui/login.cy.js) | 19 | 1 | 20 |
+| TC-ORD | 3.3 | [orders.cy.js](cypress/e2e/api/orders.cy.js) | [orders.cy.js](cypress/e2e/ui/orders.cy.js) | 21 | 1 | 22 |
+| TC-PRT | 3.5 | [parts.cy.js](cypress/e2e/api/parts.cy.js) | — | 22 | 0 | 22 |
+| TC-INV | 3.7 | [invoices.cy.js](cypress/e2e/api/invoices.cy.js) | [invoices.cy.js](cypress/e2e/ui/invoices.cy.js) | 15 | 3 | 18 |
+| **Tổng** | | | | **77** | **5** | **82** |
 
-**Mã ORD/PRT/INV/DASH mới được đánh số tạm theo kịch bản trong gói này.** PRT-05 và PRT-13 có ví dụ tên/mã trong góp ý hoặc README nhóm, nhưng ví dụ không thay thế đầy đủ hàng Excel. API và UI có thể dùng chung mã để kiểm tra cùng yêu cầu ở hai tầng; đó là hai lượt chạy, không phải hai TC Excel độc lập.
+Mỗi mã có đúng một test trong bộ 82 ca. Mức API/E2E và ưu tiên giữ theo từng hàng PDF: **56 ca P1, 24 ca P2, 2 ca P3**. Bộ chạy mặc định kiểm tra cả 82 ca thuộc bốn chức năng giữa kỳ; cột ưu tiên không có nghĩa chỉ chạy các hàng P1. AUTH giữ bộ hiện có; phần bổ sung tập trung ORD, PRT và INV.
 
-Các assertion về quy tắc biên (giá/tồn âm, số lượng 0/lẻ, ngưỡng tồn 0, miền giảm giá) và một số mã lỗi HTTP là **thiết kế kiểm thử đề xuất**, chưa được xác nhận từ Excel. Assertions về quy tắc nghiệp vụ đã có SRS không được đổi chỉ vì code hiện tại sai.
+Mọi ca seed lại CSDL Docker trong `beforeEach`; các tiền điều kiện nhắc ca trước trong PDF được dựng lại ngay trong ca hiện tại. Ví dụ TC-ORD-20/21 tự thêm S1×2 vào O1, TC-INV-10 tự thử tạo hóa đơn trùng, TC-INV-15 tự lập hóa đơn O2 trước khi đổi giá S1. Vì vậy có thể chạy riêng từng ca và đổi thứ tự spec.
 
-Khi có Excel: đối chiếu từng hàng, đổi mã/tên tạm sang đúng mã, bổ sung các TC còn thiếu và xác nhận expected đang đánh dấu đề xuất. Đây là bước hoàn thiện traceability, **không phải thao tác cần làm để chạy thử gói hiện tại**.
+## TC-AUTH – Xác thực và phân quyền
 
-| Mã hiện tại | Kịch bản | Spec | Nguồn / phần cần chốt | Trạng thái ánh xạ |
+Các hàng API nằm trong `cypress/e2e/api/auth.cy.js`; hàng E2E nằm trong `cypress/e2e/ui/login.cy.js`.
+
+| Mã TC | Mức | Ưu tiên | Dữ liệu / mục đích | Kết quả mong đợi trong PDF |
 |---|---|---|---|---|
-| TC-AUTH-01 | Đăng nhập thành công với tài khoản Quản lý | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-02 | Sai mật khẩu | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-03 | Tên đăng nhập không tồn tại, thông báo không lộ thông tin | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-04 | Thiếu username | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-05 | Thiếu password | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-06 | Username khác chữ hoa/thường | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-07 | Mật khẩu được lưu dạng băm bcrypt | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-08 | Gọi API không có header Authorization | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-09 | Token sai chữ ký | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-10 | Header thiếu tiền tố Bearer | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-11 | Thời hạn token đúng 12 giờ theo SRS | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-12 | Token đã hết hạn bị từ chối | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-13 | Quy tắc R1: Lễ tân thêm nhân viên | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-14 | Quy tắc R2: Quản lý thêm nhân viên | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-15 | Quy tắc R3: Lễ tân thêm dịch vụ | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-16 | Quy tắc R4: Lễ tân thêm phụ tùng vào kho | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-17 | Quy tắc R5: Lễ tân nhập kho | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-18 | Quy tắc R6: Lễ tân xem danh sách nhân viên | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-AUTH-19 | Quản lý tự xoá tài khoản của mình | `cypress/e2e/api/auth.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-INV-01 | Lập hóa đơn O2, tổng 500000 và chuyển Đã thanh toán | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-02 | Giảm 50000 trên tổng 500000, phải thu 450000 | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-03 | Giảm đúng tổng tiền, hóa đơn bằng 0 | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; miền giảm giá là đề xuất cần chốt; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-04 | Giảm giá âm phải bị từ chối | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; miền giảm giá là đề xuất cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-INV-05 | Giảm giá vượt tổng không được tạo hóa đơn âm | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; miền giảm giá là đề xuất cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-INV-06 | Phương thức thanh toán ngoài danh sách bị từ chối | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-INV-07 | O1 mới Tiếp nhận, chưa được xuất hóa đơn | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-INV-08 | O5 đang sửa, chưa được xuất hóa đơn | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-INV-09 | O4 đã hủy, không được xuất hóa đơn | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-INV-10 | O3 đã có hóa đơn, không tạo hóa đơn lần hai | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; mã HTTP cụ thể cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-INV-11 | Thiếu mã phiếu phải trả lỗi 400 | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; mã HTTP cụ thể cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-INV-12 | Phiếu không tồn tại phải trả lỗi 404 | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; mã HTTP cụ thể cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-INV-13 | Xem hóa đơn seed của O3 đúng người lập và chi tiết | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-INV-14 | Hóa đơn không tồn tại trả 404 | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; mã HTTP cụ thể cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-INV-15 | Đổi giá danh mục không làm đổi giá đã chốt trên phiếu | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-16 | Thanh toán bằng Chuyển khoản | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-17 | Thanh toán bằng Thẻ | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; slug API `the` là quy ước đề xuất, UI phải có Thẻ; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-18 | Bỏ qua tổng tiền giả do client gửi, tính từ chi tiết DB | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-19 | Không được thêm phụ tùng làm đổi chứng từ đã thanh toán | `cypress/e2e/api/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-01 | Tạo phiếu với C1 và V1, mặc định Tiếp nhận | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-02 | Thiếu khách hàng, không tạo phiếu | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02; đề xuất hợp đồng 400/404 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-03 | Thiếu xe, không tạo phiếu | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02; đề xuất hợp đồng 400/404 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-04 | Lọc phiếu Đang sửa theo dữ liệu seed O5 | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-05 | Thêm S1 nhân 2, tổng tiền dịch vụ 400000 | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-06 | Xóa dịch vụ của O2, tổng còn 300000 | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-07 | Thêm P1 nhân 2, trừ tồn kho và tính tiền chính xác | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-08 | Vượt tồn kho phải từ chối và rollback toàn bộ | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02; rollback theo SRS, 4xx là hợp đồng đề xuất | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-09 | Xóa P1 nhân 2 khỏi O2, hoàn kho và tính lại tổng | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-10 | Chuyển O1 từ Tiếp nhận sang Đang sửa | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-11 | Chuyển O5 từ Đang sửa sang Hoàn thành | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-12 | Hủy phiếu Tiếp nhận O1 | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-13 | Từ chối trạng thái ngoài danh sách nghiệp vụ | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-14 | Xem phiếu không tồn tại trả 404 | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02; đề xuất hợp đồng 400/404 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-15 | Tổng phiếu bằng S1 nhân 1 cộng P1 nhân 2 | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-16 | Dịch vụ số lượng 0 phải bị từ chối | `cypress/e2e/api/orders.cy.js` | Quy tắc số lượng nguyên dương đề xuất; cần chốt Excel | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-17 | Phụ tùng số lượng âm không được làm tăng tồn kho | `cypress/e2e/api/orders.cy.js` | Quy tắc số lượng nguyên dương đề xuất; cần chốt Excel | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-18 | P3 hết hàng, không tạo dòng phụ tùng | `cypress/e2e/api/orders.cy.js` | SRS 1.1.3 / UC-02; rollback theo SRS, 4xx là hợp đồng đề xuất | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-01 | Đọc danh mục P1 đến P4 đúng giá và tồn kho seed | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-02 | Thêm phụ tùng hợp lệ, tồn kho 0 được giữ nguyên | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-03 | Thiếu tên phụ tùng phải báo lỗi | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-04 | Đơn giá âm phải bị từ chối | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-05 | Số lượng âm | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Có mã/tên ví dụ trong góp ý hoặc README nhóm; chưa xác nhận hàng Excel |
-| TC-PRT-06 | Cập nhật giá P1, không làm đổi tồn kho | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-07 | Mức tồn tối thiểu 0 phải được lưu đúng | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-08 | Xóa P4 chưa được dùng trong phiếu | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-09 | Phụ tùng đã dùng phải được bảo vệ khỏi xóa | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-10 | Cảnh báo tồn kho tính cả bằng ngưỡng và hết hàng | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-11 | Thiếu đơn giá phải báo lỗi | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-12 | Nhập kho số lẻ phải bị từ chối, tồn kho không đổi | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-13 | Nhập kho hợp lệ | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Có mã/tên ví dụ trong góp ý hoặc README nhóm; chưa xác nhận hàng Excel |
-| TC-PRT-14 | Nhập kho qty bằng 0 phải bị từ chối | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-15 | Nhập kho qty âm phải bị từ chối | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-16 | Nhập kho phụ tùng không tồn tại phải báo 404 | `cypress/e2e/api/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-DASH-01 | Hiển thị số khách hàng | `cypress/e2e/ui/dashboard.phase2.cy.js` | SRS 3.8.1 trích trong góp ý; P2 | Mã TC-DASH tạm; đối chiếu Excel |
-| TC-DASH-02 | Hiển thị số xe | `cypress/e2e/ui/dashboard.phase2.cy.js` | SRS 3.8.1 trích trong góp ý; P2 | Mã TC-DASH tạm; đối chiếu Excel |
-| TC-DASH-03 | Hiển thị số phiếu đang xử lý | `cypress/e2e/ui/dashboard.phase2.cy.js` | SRS 3.8.1 trích trong góp ý; P2 | Mã TC-DASH tạm; đối chiếu Excel |
-| TC-DASH-04 | Hiển thị doanh thu hôm nay | `cypress/e2e/ui/dashboard.phase2.cy.js` | SRS 3.8.1 trích trong góp ý; P2 | Mã TC-DASH tạm; đối chiếu Excel |
-| TC-DASH-05 | Hiển thị doanh thu tháng này | `cypress/e2e/ui/dashboard.phase2.cy.js` | SRS 3.8.1 trích trong góp ý; P2 | Mã TC-DASH tạm; đối chiếu Excel |
-| TC-INV-02 | Lập hóa đơn giảm 50000, thu 450000 qua giao diện | `cypress/e2e/ui/invoices.cy.js` | SRS 1.1.7 / UC-03; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-INV-13 | Xem hóa đơn seed qua giao diện | `cypress/e2e/ui/invoices.cy.js` | SRS 1.1.7 / UC-03 | Mã mới tạm; đối chiếu Excel |
-| TC-INV-17 | Giao diện phải có phương thức thanh toán Thẻ theo SRS | `cypress/e2e/ui/invoices.cy.js` | SRS 1.1.7 / UC-03; slug API `the` là quy ước đề xuất, UI phải có Thẻ; dùng HTTP thành công 200 theo hợp đồng hiện có, cần chốt nếu Excel quy định khác | Mã mới tạm; đối chiếu Excel |
-| TC-AUTH-20 | Đăng nhập qua giao diện | `cypress/e2e/ui/login.cy.js` | TC nhóm đã có; SRS 1.1.1 / bảng phân quyền | Giữ nguyên mã từ nhánh test; chưa đọc Excel gốc |
-| TC-ORD-01 | Tạo phiếu cho C1 và V1 qua giao diện | `cypress/e2e/ui/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-07 | Thêm P1 nhân 2 qua giao diện, tồn kho còn 8 | `cypress/e2e/ui/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-ORD-09 | Xóa phụ tùng O2 qua giao diện và hoàn kho | `cypress/e2e/ui/orders.cy.js` | SRS 1.1.3 / UC-02 | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-13 | Nhập thêm 5 P1 qua giao diện, tồn kho thành 15 | `cypress/e2e/ui/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Có mã/tên ví dụ trong góp ý hoặc README nhóm; chưa xác nhận hàng Excel |
-| TC-PRT-14 | Nhập 0 qua giao diện báo lỗi, tồn kho không đổi | `cypress/e2e/ui/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm; quy tắc biên/HTTP cần chốt | Mã mới tạm; đối chiếu Excel |
-| TC-PRT-10 | Hiển thị trạng thái theo từng ngưỡng tồn kho | `cypress/e2e/ui/parts.cy.js` | SRS 1.1.5; dữ liệu seed nhóm | Mã mới tạm; đối chiếu Excel |
+| TC-AUTH-01 | API | P1 | `admin/admin123` | 200; có token; role `quan_ly` |
+| TC-AUTH-02 | API | P1 | `admin/sai123` | 401; “Sai tên đăng nhập hoặc mật khẩu”; không có token |
+| TC-AUTH-03 | API | P1 | Tên `khongton` | 401; thông báo giống TC-AUTH-02, không lộ tài khoản |
+| TC-AUTH-04 | API | P1 | Thiếu username | 400; “Thiếu thông tin” |
+| TC-AUTH-05 | API | P1 | Thiếu password | 400; “Thiếu thông tin” |
+| TC-AUTH-06 | API | P2 | Username `ADMIN` | 401 |
+| TC-AUTH-07 | API + CSDL | P1 | Đọc mật khẩu admin | Bcrypt bắt đầu `$2a$` hoặc `$2b$`, không lưu `admin123` |
+| TC-AUTH-08 | API | P1 | Không gửi Authorization | 401; “Chưa đăng nhập” |
+| TC-AUTH-09 | API | P1 | Token sai chữ ký | 401; “Token không hợp lệ” |
+| TC-AUTH-10 | API | P2 | Header thiếu tiền tố Bearer | 401; “Chưa đăng nhập” |
+| TC-AUTH-11 | API | P1 | Giải mã JWT hợp lệ | `exp - iat = 43200` giây |
+| TC-AUTH-12 | API | P1 | Token đã hết hạn | 401; “Token không hợp lệ” |
+| TC-AUTH-13 | API | P1 | Lễ tân thêm nhân viên | 403; “Không có quyền” |
+| TC-AUTH-14 | API | P1 | Quản lý thêm `nv_moi` | 200; nhân viên xuất hiện trong danh sách |
+| TC-AUTH-15 | API | P1 | Lễ tân thêm dịch vụ | 403 |
+| TC-AUTH-16 | API | P1 | Lễ tân thêm phụ tùng | 403 |
+| TC-AUTH-17 | API | P1 | Lễ tân nhập kho P1×5 | 403 |
+| TC-AUTH-18 | API | P2 | Lễ tân xem nhân viên | 403 |
+| TC-AUTH-19 | API | P2 | Quản lý tự xóa tài khoản | 400; “Không thể xóa chính mình” |
+| TC-AUTH-20 | E2E | P1 | Đăng nhập đúng, sau đó sai | Đúng: vào Dashboard, tên Quản lý; sai: `#login-error` hiển thị, còn trang đăng nhập |
+
+## TC-ORD – Phiếu sửa chữa
+
+TC-ORD-01…21 nằm trong `cypress/e2e/api/orders.cy.js`; TC-ORD-22 nằm trong `cypress/e2e/ui/orders.cy.js`.
+
+| Mã TC | Mức | Ưu tiên | Dữ liệu / mục đích | Kết quả mong đợi trong PDF |
+|---|---|---|---|---|
+| TC-ORD-01 | API | P1 | Tạo C1/V1; “Xe kêu khi phanh” | 200; `tiep_nhan`, tổng 0 |
+| TC-ORD-02 | API | P1 | Thiếu customer_id | 400; “Thiếu thông tin” |
+| TC-ORD-03 | API | P1 | Thiếu vehicle_id | 400; “Thiếu thông tin” |
+| TC-ORD-04 | API | P2 | C1 chọn V2 của C2 | 400; báo xe không thuộc khách hàng |
+| TC-ORD-05 | API | P2 | customer_id=99999, V1 | 400 hoặc 404; thông báo rõ ràng |
+| TC-ORD-06 | API | P1 | O1: Tiếp nhận → Đang sửa | 200; `dang_sua` |
+| TC-ORD-07 | API | P1 | O5: Đang sửa → Hoàn thành | 200; `hoan_thanh` |
+| TC-ORD-08 | API | P1 | O1: Tiếp nhận → Hủy | 200; `huy` |
+| TC-ORD-09 | API | P1 | O3: Đã thanh toán → Tiếp nhận | 400; giữ `da_thanh_toan` |
+| TC-ORD-10 | API | P1 | O4: Hủy → Đang sửa | 400; giữ `huy` |
+| TC-ORD-11 | API | P2 | O1: Tiếp nhận → Hoàn thành | 400; không bỏ qua Đang sửa |
+| TC-ORD-12 | API | P1 | status=`abc` | 400; trạng thái không đổi |
+| TC-ORD-13 | API | P2 | Body `{}` khi đổi trạng thái | 400; “Thiếu thông tin” |
+| TC-ORD-14 | API | P1 | Hủy O5 đang có P2×1 | P2 tăng tồn thêm 1, từ 5 lên 6 |
+| TC-ORD-15 | API | P1 | Thêm S1×2 vào O1 | 200; tổng 400.000; `price_at_time=200000` |
+| TC-ORD-16 | API | P2 | service_id=99999 | 404 hoặc 400; “Dịch vụ không tồn tại” |
+| TC-ORD-17 | API | P1 | Thêm S2 vào O2 Hoàn thành | 400; tổng tiền không đổi |
+| TC-ORD-18 | API | P1 | Thêm S2 vào O3 Đã thanh toán | 400 |
+| TC-ORD-19 | API | P2 | Thêm S3 đã tạm ngưng | 400; báo dịch vụ đã tạm ngưng |
+| TC-ORD-20 | API | P1 | O1 đã có S1×2; đổi giá S1 lên 250.000 | `price_at_time` vẫn 200.000; tổng không đổi |
+| TC-ORD-21 | API | P1 | Xóa dòng S1×2 khỏi O1 | 200; dòng biến mất; tổng 0 |
+| TC-ORD-22 | E2E | P1 | Tạo phiếu C1/V1, đổi Đang sửa, thêm Thay dầu | Nhãn Tiếp nhận → Đang sửa; tổng hiển thị 200.000 đ |
+
+## TC-PRT – Kho phụ tùng
+
+Toàn bộ 22 ca nằm trong `cypress/e2e/api/parts.cy.js`, đúng mức API của PDF. Không dùng lại các mã này cho UI hoặc kiểm tra danh mục khác.
+
+| Mã TC | Mức | Ưu tiên | Dữ liệu / mục đích | Kết quả mong đợi trong PDF |
+|---|---|---|---|---|
+| TC-PRT-01 | API | P1 | Thêm P1×1 vào O1 | 200; P1 còn 9; tổng tăng 150.000 |
+| TC-PRT-02 | API | P1 | Thêm P1×10, đúng tồn | 200; P1 còn 0 |
+| TC-PRT-03 | API | P1 | Thêm P1×11, vượt tồn 1 | 400; “Không đủ tồn kho (còn 10)”; P1 vẫn 10 |
+| TC-PRT-04 | API | P1 | Thêm P1 với qty=0 | 400; phiếu và tồn kho không đổi |
+| TC-PRT-05 | API | P1 | Thêm P1 với qty=-1 | 400; tồn kho không đổi |
+| TC-PRT-06 | API | P2 | Thêm P1, không gửi qty | 400 hoặc mặc định qty=1 và trừ kho 1 |
+| TC-PRT-07 | API | P2 | Thêm P1 với qty=`abc` | 400; “Số lượng không hợp lệ” |
+| TC-PRT-08 | API | P2 | part_id=99999, qty=1 | 404 hoặc 400; “Phụ tùng không tồn tại” |
+| TC-PRT-09 | API | P1 | Thêm P1×2 vào phiếu 99999 | Báo lỗi; rollback, P1 vẫn 10 |
+| TC-PRT-10 | API | P1 | Xóa dòng P2×1 khỏi O5 | 200; P2 tồn 6; tổng O5 giảm 400.000 |
+| TC-PRT-11 | API | P2 | Xóa dòng phụ tùng 99999 của O5 | 404 |
+| TC-PRT-12 | API | P1 | Nhập kho P1 qty=5 | 200; P1 tồn 15 |
+| TC-PRT-13 | API | P1 | Nhập kho qty=0 | 400; “Số lượng không hợp lệ” |
+| TC-PRT-14 | API | P1 | Nhập kho qty=-3 | 400; “Số lượng không hợp lệ” |
+| TC-PRT-15 | API | P2 | Nhập kho qty=`abc` | 400 |
+| TC-PRT-16 | API | P2 | Nhập kho qty=2.5 | 400; số lượng phải là số nguyên |
+| TC-PRT-17 | API | P2 | Nhập kho phụ tùng 99999 | 404 |
+| TC-PRT-18 | API | P2 | Tạo phụ tùng thiếu name, price=90000 | 400; “Thiếu thông tin” |
+| TC-PRT-19 | API | P2 | Gạt mưa, price=-90000 | 400 |
+| TC-PRT-20 | API | P3 | Ốc vít, price=1000, min_stock=0 | Lưu `min_stock=0` |
+| TC-PRT-21 | API | P1 | P4 có min_stock=5, lần lượt đặt tồn 6, 5, 4 | `lowStockParts` không đếm P4 ở 6; đếm ở 5 và 4 |
+| TC-PRT-22 | API | P2 | Xóa P2 đang được O5 sử dụng | 400; báo phụ tùng đang được sử dụng |
+
+TC-PRT-06 có hai kết quả hợp lệ được PDF cho phép; test kiểm tra đầy đủ tác động tương ứng, không chấp nhận dữ liệu lỗi hoặc tồn kho NULL. TC-PRT-09 không quy định mã HTTP cụ thể; kiểm tra phản hồi lỗi và rollback đúng, không tự đặt expected bắt buộc 400. TC-PRT-21 thay đổi tồn P4 qua dữ liệu local để kiểm tra đủ ba giá trị biên, không chỉ kiểm tra số cảnh báo ban đầu.
+
+## TC-INV – Hóa đơn và thanh toán
+
+Các hàng API nằm trong `cypress/e2e/api/invoices.cy.js`; TC-INV-12/17/18 nằm trong `cypress/e2e/ui/invoices.cy.js`.
+
+| Mã TC | Mức | Ưu tiên | Dữ liệu / mục đích | Kết quả mong đợi trong PDF |
+|---|---|---|---|---|
+| TC-INV-01 | API | P1 | O2, discount=0, Tiền mặt | 200; dịch vụ 200.000; phụ tùng 300.000; tổng 500.000; O2 `da_thanh_toan` |
+| TC-INV-02 | API | P1 | O2, discount=100000, Chuyển khoản | 200; tổng 400.000 |
+| TC-INV-03 | API | P1 | discount=500000 | 200; tổng 0 |
+| TC-INV-04 | API | P1 | discount=500001, vượt tổng 1 đồng | 400; không tạo hóa đơn |
+| TC-INV-05 | API | P1 | discount=-50000 | 400 |
+| TC-INV-06 | API | P2 | discount=`abc` | 400 |
+| TC-INV-07 | API | P1 | Lập hóa đơn O1 chưa hoàn thành | 400; giữ `tiep_nhan` |
+| TC-INV-08 | API | P1 | Lập hóa đơn O4 đã hủy | 400 |
+| TC-INV-09 | API | P1 | Lập hóa đơn thứ hai cho O3 | 400; “Phiếu đã được thanh toán” |
+| TC-INV-10 | API | P1 | Kiểm tra sau lần lập hóa đơn trùng thất bại | Không có hóa đơn thứ hai; trạng thái O3 không đổi |
+| TC-INV-11 | API | P1 | payment_method=`bitcoin` | 400 |
+| TC-INV-12 | E2E | P1 | Mở lập hóa đơn O2, xem `#inv-payment` | Có 3 lựa chọn: Tiền mặt, Chuyển khoản, Thẻ |
+| TC-INV-13 | API | P2 | repair_order_id=99999 | 404 |
+| TC-INV-14 | API | P2 | Body `{}` | 400; “Thiếu thông tin” |
+| TC-INV-15 | API | P1 | Lập hóa đơn O2 rồi đổi giá S1 lên 250.000 | service_total vẫn 200.000; tổng hóa đơn không đổi |
+| TC-INV-16 | API | P3 | Xem hóa đơn 99999 | 404; “Không tìm thấy” |
+| TC-INV-17 | E2E | P1 | O2, nhập discount=100000, xác nhận | `#inv-grand-total` hiển thị 400.000 đ; phiếu có nhãn Đã thanh toán |
+| TC-INV-18 | E2E | P2 | Mở O1, O5, O2 | Nút Lập hóa đơn chỉ có ở O2 Hoàn thành |
+
+## Các quy tắc sử dụng kết quả
+
+- Số lượng 82 là số ca được ánh xạ, không phải tuyên bố 82 ca Pass. Kết quả thực chạy nằm trong báo cáo của runner và [VERIFICATION.md](VERIFICATION.md).
+- Phản hồi 500 không được coi tương đương 400/404 khi PDF đã quy định cụ thể. Các lựa chọn 400 hoặc 404 chỉ áp dụng đúng những hàng được PDF cho phép.
+- Ca phát hiện ứng dụng sai SRS giữ assertion và ghi [BUG_REPORT.md](BUG_REPORT.md). Không đổi mã TC hay expected để khớp hành vi sai.
+- Mọi test dùng Express và PostgreSQL local thật, không giả lập response API. UI gọi `cy.useLocalApi()` trước khi truy cập frontend.
+
+## Dashboard giai đoạn 2
+
+`cypress/e2e/ui/dashboard.phase2.cy.js` chạy riêng với `npm run test:dashboard`, kiểm tra từng yêu cầu SRS 3.8.1 trong `GOP_Y_LAB3.md`: số khách hàng, số xe, số phiếu đang xử lý, doanh thu hôm nay và doanh thu tháng này. Không kiểm tra “đúng 6 thẻ”.
+
+Năm mã `TC-DASH-01…05` chỉ là định danh bổ sung cho các yêu cầu SRS này; **không phải mã trong PDF và không được tính vào 82 TC**. Chức năng ngoài bốn nhóm của PDF và REG-01 báo cáo tháng 2 thuộc giai đoạn 2. Riêng TC-PRT-21 dùng endpoint dashboard để xác minh cảnh báo kho đã được PDF quy định nên vẫn thuộc bộ giữa kỳ.

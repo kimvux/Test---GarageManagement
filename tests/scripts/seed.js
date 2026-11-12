@@ -1,6 +1,6 @@
-// Reset CSDL test và nạp dữ liệu theo mục 5 của HANDOFF_KIEM_THU_AUTOGARA.md.
+// Reset CSDL test và nạp dữ liệu theo bảng Dữ liệu test trong Test Case.xlsx.pdf.
 // Chèn đúng thứ tự, không ghi id, để id khớp ký hiệu (C1 = 1, O3 = 3...).
-// Dùng được theo 2 cách: `node --env-file=.env.test scripts/seed.js` hoặc task `db:seed` của Cypress.
+// Dùng được theo 2 cách: `npm run seed` hoặc task `db:seed` của Cypress.
 'use strict';
 
 const { Client } = require('pg');

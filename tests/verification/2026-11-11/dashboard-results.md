@@ -1,8 +1,8 @@
 # Kết quả Cypress
 
-2026-11-11T01:53:22.309Z
+2026-11-11T14:44:08.518Z
 
-Commit: ba91fa7f7cffd18e691b7ad66e79bf25aed0c460
+Commit: a408c91f5234dc74e0de913095ca53d7a79e9156
 
 Tổng 5; Pass 4; Fail 1; Pending 0; Skipped 0.
 

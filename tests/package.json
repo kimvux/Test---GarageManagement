@@ -17,9 +17,15 @@
     "test:ui": "node scripts/run.js ui",
     "test:dashboard": "node scripts/run.js dashboard",
     "test": "node scripts/run.js all",
-    "cy:open": "node scripts/run.js open"
+    "cy:open": "node scripts/run.js open",
+    "test:auth": "node scripts/run.js auth",
+    "test:orders": "node scripts/run.js orders",
+    "test:parts": "node scripts/run.js parts",
+    "test:invoices": "node scripts/run.js invoices"
   },
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
     "bcryptjs": "^2.4.3",
     "c8": "^10.1.3",

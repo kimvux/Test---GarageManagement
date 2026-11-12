@@ -1,5 +1,5 @@
 // Giai đoạn 2, chỉ chạy npm run test:dashboard. Không đếm tổng số thẻ.
-// Mã TC-DASH là mã tạm; yêu cầu đối chiếu GOP_Y_LAB3 mục 3.8.1.
+// TC-DASH là định danh bổ sung ngoài 82 mã PDF; yêu cầu từ GOP_Y_LAB3 mục 3.8.1.
 function card(label, value) {
   cy.contains('#dash-stats .stat-label', label).closest('.stat-card').find('.stat-value').should('contain', value);
 }

@@ -1,0 +1,122 @@
+﻿"Mã TC","Spec","Tên test","Trạng thái","Lỗi thực tế"
+"TC-INV-12","cypress/e2e/ui/invoices.cy.js","P1 – Hóa đơn (giao diện và backend thật) > TC-INV-12 – Giao diện có đủ Tiền mặt, Chuyển khoản và Thẻ","Fail","AssertionError: Timed out retrying after 6000ms: đủ ba phương thức theo SRS: expected '[ <option>, 1 more... ]' to have a length of 3 but got 2
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/ui/invoices.cy.js:29:60)"
+"TC-INV-17","cypress/e2e/ui/invoices.cy.js","P1 – Hóa đơn (giao diện và backend thật) > TC-INV-17 – Giảm 100000 qua giao diện, thu 400000 và hiện Đã thanh toán","Pass",""
+"TC-INV-18","cypress/e2e/ui/invoices.cy.js","P1 – Hóa đơn (giao diện và backend thật) > TC-INV-18 – Chỉ phiếu Hoàn thành mới có nút Lập hóa đơn","Pass",""
+"TC-AUTH-20","cypress/e2e/ui/login.cy.js","F01 – Đăng nhập (E2E) > TC-AUTH-20 – Đăng nhập qua giao diện","Pass",""
+"TC-ORD-22","cypress/e2e/ui/orders.cy.js","P1 – Phiếu sửa chữa (giao diện và backend thật) > TC-ORD-22 – Luồng tạo phiếu và đổi trạng thái qua giao diện","Pass",""
+"TC-AUTH-01","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-01 – Đăng nhập thành công với tài khoản Quản lý","Pass",""
+"TC-AUTH-02","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-02 – Sai mật khẩu","Pass",""
+"TC-AUTH-03","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-03 – Tên đăng nhập không tồn tại, thông báo không lộ thông tin","Pass",""
+"TC-AUTH-04","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-04 – Thiếu username","Pass",""
+"TC-AUTH-05","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-05 – Thiếu password","Pass",""
+"TC-AUTH-06","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-06 – Username khác chữ hoa/thường","Pass",""
+"TC-AUTH-07","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-07 – Mật khẩu được lưu dạng băm bcrypt","Pass",""
+"TC-AUTH-08","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-08 – Gọi API không có header Authorization","Pass",""
+"TC-AUTH-09","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-09 – Token sai chữ ký","Pass",""
+"TC-AUTH-10","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-10 – Header thiếu tiền tố Bearer","Pass",""
+"TC-AUTH-11","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-11 – Thời hạn token đúng 12 giờ theo SRS","Fail","AssertionError: exp − iat (giây): expected 28800 to equal 43200
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/auth.cy.js:91:65)"
+"TC-AUTH-12","cypress/e2e/api/auth.cy.js","F01 – Xác thực (API) > TC-AUTH-12 – Token đã hết hạn bị từ chối","Pass",""
+"TC-AUTH-13","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-13 – Quy tắc R1: Lễ tân thêm nhân viên","Pass",""
+"TC-AUTH-14","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-14 – Quy tắc R2: Quản lý thêm nhân viên","Pass",""
+"TC-AUTH-15","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-15 – Quy tắc R3: Lễ tân thêm dịch vụ","Pass",""
+"TC-AUTH-16","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-16 – Quy tắc R4: Lễ tân thêm phụ tùng vào kho","Fail","AssertionError: expected 200 to equal 403
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/auth.cy.js:141:30)"
+"TC-AUTH-17","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-17 – Quy tắc R5: Lễ tân nhập kho","Fail","AssertionError: expected 200 to equal 403
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/auth.cy.js:149:30)"
+"TC-AUTH-18","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-18 – Quy tắc R6: Lễ tân xem danh sách nhân viên","Fail","AssertionError: expected 200 to equal 403
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/auth.cy.js:157:30)"
+"TC-AUTH-19","cypress/e2e/api/auth.cy.js","F01 – Phân quyền (API, bảng quyết định) > TC-AUTH-19 – Quản lý tự xoá tài khoản của mình","Pass",""
+"TC-INV-01","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-01 – Lập hóa đơn chuẩn cho O2, tổng 500000","Pass",""
+"TC-INV-02","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-02 – Giảm 100000 và chuyển khoản, tổng 400000","Pass",""
+"TC-INV-03","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-03 – Giảm đúng tổng tiền 500000, hóa đơn bằng 0","Pass",""
+"TC-INV-04","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-04 – Giảm giá vượt tổng tiền một đồng bị từ chối","Fail","AssertionError: mã HTTP theo Test Case: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-05","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-05 – Giảm giá âm -50000 bị từ chối","Fail","AssertionError: mã HTTP theo Test Case: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-06","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-06 – Giảm giá không phải số bị từ chối","Fail","AssertionError: mã HTTP theo Test Case: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-07","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-07 – Phiếu O1 chưa hoàn thành không được lập hóa đơn","Fail","AssertionError: mã HTTP theo Test Case: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-08","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-08 – Phiếu O4 đã hủy không được lập hóa đơn","Fail","AssertionError: mã HTTP theo Test Case: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-09","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-09 – Không được lập hóa đơn lần hai cho O3","Fail","AssertionError: mã HTTP theo Test Case: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-10","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-10 – Rollback giữ nguyên hóa đơn và trạng thái O3","Pass",""
+"TC-INV-11","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-11 – Phương thức thanh toán bitcoin bị từ chối","Fail","AssertionError: mã HTTP theo Test Case: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-13","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-13 – Phiếu không tồn tại trả 404","Fail","AssertionError: mã HTTP theo Test Case: expected 500 to equal 404
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-14","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-14 – Body rỗng thiếu repair_order_id trả 400","Fail","AssertionError: mã HTTP theo Test Case: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/invoices.cy.js:25:52)"
+"TC-INV-15","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-15 – Hóa đơn đã lập giữ nguyên giá sau khi đổi giá S1","Pass",""
+"TC-INV-16","cypress/e2e/api/invoices.cy.js","P1 – Hóa đơn và thanh toán (API thật) > TC-INV-16 – Xem hóa đơn không tồn tại trả 404","Pass",""
+"TC-ORD-01","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-01 – Tạo phiếu hợp lệ","Pass",""
+"TC-ORD-02","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-02 – Thiếu customer_id","Pass",""
+"TC-ORD-03","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-03 – Thiếu vehicle_id","Pass",""
+"TC-ORD-04","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-04 – Xe không thuộc khách hàng được chọn","Fail","AssertionError: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:61:30)"
+"TC-ORD-05","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-05 – customer_id không tồn tại","Fail","AssertionError: PDF cho phép 400 hoặc 404: expected 500 to be one of [ 400, 404 ]
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:71:62)"
+"TC-ORD-06","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-06 – Chuyển hợp lệ: Tiếp nhận → Đang sửa","Pass",""
+"TC-ORD-07","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-07 – Chuyển hợp lệ: Đang sửa → Hoàn thành","Pass",""
+"TC-ORD-08","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-08 – Chuyển hợp lệ: Tiếp nhận → Huỷ","Pass",""
+"TC-ORD-09","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-09 – Chuyển không hợp lệ: Đã thanh toán → Tiếp nhận","Fail","AssertionError: Timed out retrying after 6000ms: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:105:23)"
+"TC-ORD-10","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-10 – Chuyển không hợp lệ: Huỷ → Đang sửa","Fail","AssertionError: Timed out retrying after 6000ms: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:113:23)"
+"TC-ORD-11","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-11 – Chuyển không hợp lệ: Tiếp nhận → Hoàn thành","Fail","AssertionError: Timed out retrying after 6000ms: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:121:23)"
+"TC-ORD-12","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-12 – Giá trị trạng thái không thuộc danh sách","Fail","AssertionError: Timed out retrying after 6000ms: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:129:23)"
+"TC-ORD-13","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-13 – Thiếu trường status","Fail","AssertionError: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:137:30)"
+"TC-ORD-14","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-14 – Huỷ phiếu có phụ tùng thì hoàn trả tồn kho","Fail","AssertionError: tồn kho P2: expected 5 to equal 6
+    at Context.eval (webpack://autogara-tests/./cypress/support/assertions.js:5:51)"
+"TC-ORD-15","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-15 – Thêm dịch vụ, tính lại tổng tiền","Pass",""
+"TC-ORD-16","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-16 – Thêm dịch vụ không tồn tại","Fail","AssertionError: PDF cho phép 400 hoặc 404: expected 500 to be one of [ 400, 404 ]
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:170:62)"
+"TC-ORD-17","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-17 – Thêm dịch vụ vào phiếu đã Hoàn thành","Fail","AssertionError: Timed out retrying after 6000ms: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:181:23)"
+"TC-ORD-18","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-18 – Thêm dịch vụ vào phiếu đã thanh toán","Fail","AssertionError: Timed out retrying after 6000ms: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:190:23)"
+"TC-ORD-19","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-19 – Thêm dịch vụ đã tạm ngưng","Fail","AssertionError: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/orders.cy.js:199:30)"
+"TC-ORD-20","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-20 – Giá trong phiếu không đổi khi đổi giá dịch vụ","Pass",""
+"TC-ORD-21","cypress/e2e/api/orders.cy.js","P1 – Phiếu sửa chữa (API thật, mã TC theo PDF) > TC-ORD-21 – Xoá dịch vụ khỏi phiếu","Pass",""
+"TC-PRT-01","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-01 – Thêm phụ tùng với số lượng nhỏ nhất hợp lệ","Pass",""
+"TC-PRT-02","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-02 – Số lượng bằng đúng tồn kho","Pass",""
+"TC-PRT-03","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-03 – Số lượng vượt tồn kho 1 đơn vị","Fail","AssertionError: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:50:30)"
+"TC-PRT-04","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-04 – Số lượng bằng 0","Fail","AssertionError: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:58:28)"
+"TC-PRT-05","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-05 – Số lượng âm","Fail","AssertionError: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:66:28)"
+"TC-PRT-06","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-06 – Không gửi số lượng","Fail","AssertionError: expected 500 to be one of [ 400, 200 ]
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:75:31)"
+"TC-PRT-07","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-07 – Số lượng không phải số","Fail","AssertionError: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:91:30)"
+"TC-PRT-08","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-08 – Phụ tùng không tồn tại","Fail","AssertionError: expected 500 to be one of [ 404, 400 ]
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:102:33)"
+"TC-PRT-09","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-09 – Rollback khi phiếu không tồn tại","Pass",""
+"TC-PRT-10","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-10 – Xoá phụ tùng khỏi phiếu thì hoàn kho","Pass",""
+"TC-PRT-11","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-11 – Xoá dòng phụ tùng không tồn tại","Fail","AssertionError: expected 200 to equal 404
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:143:28)"
+"TC-PRT-12","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-12 – Nhập kho số lượng hợp lệ","Pass",""
+"TC-PRT-13","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-13 – Nhập kho số lượng 0","Pass",""
+"TC-PRT-14","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-14 – Nhập kho số lượng âm","Pass",""
+"TC-PRT-15","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-15 – Nhập kho với chuỗi chữ","Fail","AssertionError: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:178:42)"
+"TC-PRT-16","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-16 – Nhập kho số thập phân","Fail","AssertionError: số lượng phải là số nguyên: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:185:72)"
+"TC-PRT-17","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-17 – Nhập kho cho phụ tùng không tồn tại","Fail","AssertionError: expected 200 to equal 404
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:191:28)"
+"TC-PRT-18","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-18 – Thêm phụ tùng thiếu tên","Pass",""
+"TC-PRT-19","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-19 – Thêm phụ tùng giá âm","Fail","AssertionError: expected 200 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:207:28)"
+"TC-PRT-20","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-20 – Đặt mức tồn tối thiểu bằng 0","Fail","AssertionError: expected 5 to equal 0
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:221:34)"
+"TC-PRT-21","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-21 – Cảnh báo tồn thấp tại các giá trị biên","Pass",""
+"TC-PRT-22","cypress/e2e/api/parts.cy.js","P1 – TC-PRT: kho phụ tùng (API và PostgreSQL thật) > TC-PRT-22 – Xoá phụ tùng đã dùng trong phiếu","Fail","AssertionError: expected 500 to equal 400
+    at Context.eval (webpack://autogara-tests/./cypress/e2e/api/parts.cy.js:249:30)"
