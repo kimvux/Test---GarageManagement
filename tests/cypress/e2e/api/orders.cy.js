@@ -10,6 +10,16 @@ function orderDetail(token, id, status, total) {
   });
 }
 
+// Bước GET /api/parts theo Test Case; đọc tồn kho qua API thay vì đọc thẳng CSDL.
+function checkStock(token, id, quantity) {
+  return cy.api('GET', '/api/parts', null, token).then(res => {
+    expect(res.status, 'GET /api/parts').to.eq(200);
+    const part = res.body.find(row => row.id === id);
+    expect(part, `phụ tùng P${id}`).to.exist;
+    expect(Number(part.stock_qty), `tồn kho P${id}`).to.eq(quantity);
+  });
+}
+
 function addS1Twice(token) {
   return cy.api('POST', '/api/repair-orders/1/services', { service_id: 1, qty: 2 }, token)
     .its('status').should('eq', 200);
@@ -143,10 +153,11 @@ describe('P1 – Phiếu sửa chữa (API thật, mã TC theo PDF)', () => {
 
   it('TC-ORD-14 – Huỷ phiếu có phụ tùng thì hoàn trả tồn kho', () => {
     receptionist(token => {
-      expectStock(2, 5);
+      checkStock(token, 2, 5);
       cy.api('PUT', '/api/repair-orders/5/status', { status: 'huy' }, token)
         .its('status').should('eq', 200);
       orderDetail(token, 5, 'huy');
+      checkStock(token, 2, 6);
       expectStock(2, 6);
     });
   });

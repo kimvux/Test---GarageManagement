@@ -60,6 +60,10 @@ describe('P1 – Hóa đơn (giao diện và backend thật)', () => {
   it('TC-INV-18 – Chỉ phiếu Hoàn thành mới có nút Lập hóa đơn', () => {
     for (const id of [1, 5]) {
       openOrder(id);
+      // Chờ chi tiết phiếu tải xong rồi mới kiểm tra phủ định, tránh pass sai khi body còn rỗng.
+      cy.contains('#order-detail-body .card', 'Phụ tùng sử dụng').should('be.visible');
+      // Kiểm tra theo chữ hiển thị như với O2, không phụ thuộc cách gắn sự kiện của nút.
+      cy.contains('#order-detail-body button', 'Lập hóa đơn').should('not.exist');
       cy.get('#order-detail-body button[onclick^="openInvoiceModal("]').should('not.exist');
       cy.get('#modal-order-detail .btn-close').click();
       cy.get('#modal-order-detail').should('not.have.class', 'open');
